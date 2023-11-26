@@ -6,5 +6,6 @@ namespace RegistrationWizard.Server.Services
     public interface IUserService
     {
         Task SaveUserAsync(User user);
+        Task<User> GetUserAsync(string email);
     }
 }

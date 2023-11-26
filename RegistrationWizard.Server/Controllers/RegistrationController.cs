@@ -32,5 +32,23 @@ namespace RegistrationWizard.Server.Controllers
             _logger.LogWarning("User registration failed due to invalid model state: {ModelState}", ModelState);
             return BadRequest(ModelState);
         }
+
+        [HttpPost("validate")]
+        public async Task<IActionResult> ValidateUser(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = await _userService.GetUserAsync(user.Email);
+                if (existingUser != null)
+                {
+                    _logger.LogInformation("User validation failed: User already exists: {User}", user);
+                    return BadRequest("User already exists");
+                }
+                _logger.LogInformation("User validation successful: {User}", user);
+                return Ok();
+            }
+            _logger.LogWarning("User validation failed due to invalid model state: {ModelState}", ModelState);
+            return BadRequest(ModelState);
+        }
     }
 }

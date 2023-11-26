@@ -1,5 +1,6 @@
 using RegistrationWizard.Server.Models;
 using RegistrationWizard.Server.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace RegistrationWizard.Server.Services
 {
@@ -16,6 +17,11 @@ namespace RegistrationWizard.Server.Services
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> GetUserAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }
