@@ -24,6 +24,7 @@ namespace RegistrationWizard.Server.Controllers
         {
             if (ModelState.IsValid)
             {
+                user.Id = Guid.NewGuid();
                 _logger.LogInformation("Attempting to register user: {User}", user);
                 await _userService.SaveUserAsync(user);
                 _logger.LogInformation("User registration successful: {User}", user);
