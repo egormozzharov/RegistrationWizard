@@ -37,12 +37,14 @@ app.Run();
 void ConfigureServices(IServiceCollection services)
 {
     services.AddScoped<IUserService, UserService>();
+    services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<IUnitOfWork, UnitOfWork>();
     services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
     using (var serviceScope = services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>().CreateScope())
     {
         var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-        context.Database.Migrate();
+        context.Database.EnsureCreated();
     }
 }

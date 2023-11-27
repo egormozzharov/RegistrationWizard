@@ -1,27 +1,25 @@
 using RegistrationWizard.Server.Models;
-using RegistrationWizard.Server.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace RegistrationWizard.Server.Services
 {
     public class UserService : IUserService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task SaveUserAsync(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            _unitOfWork.UserRepository.Add(user);
+            await _unitOfWork.CompleteAsync();
         }
 
         public async Task<User> GetUserAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _unitOfWork.UserRepository.GetByEmailAsync(email);
         }
     }
 }
